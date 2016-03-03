@@ -1,8 +1,0 @@
-C:\Projects\frest\frest\bin\Debug\frest.exe.config
-C:\Projects\frest\frest\bin\Debug\frest.XML
-C:\Projects\frest\frest\bin\Debug\frest.exe
-C:\Projects\frest\frest\bin\Debug\frest.pdb
-C:\Projects\frest\frest\bin\Debug\FSharp.Core.dll
-C:\Projects\frest\frest\bin\Debug\FSharp.Core.xml
-C:\Projects\frest\frest\obj\Debug\frest.exe
-C:\Projects\frest\frest\obj\Debug\frest.pdb
