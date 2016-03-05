@@ -24,7 +24,8 @@ let processArgs cmdLine model =
                 | InvariantEqual "Patch" -> {m with request = Patch}
                 | StartsWith "http" -> {m with url = args}
                 | StartsWith "www" -> {m with url = args}
-                | HasMatch "([A-Z]+)=([A-Z]+)" -> {m with content = m.content :: args}
+                | HasMatch "([0-9A-Z]+)=([0-9A-Z]+)" -> {m with content = (build_content args "=") :: m.content}
+                | HasMatch "([0-9A-Z]+):([0-9A-Z]+)" -> {m with headers = (build_header args ":") :: m.headers}
                 | _ -> defaultOpt args m        
            
         match list with 
