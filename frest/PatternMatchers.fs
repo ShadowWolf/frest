@@ -1,4 +1,6 @@
 ﻿module PatternMatchers
+open System
+open System.Text.RegularExpressions
 
 let (|InvariantEqual|_|) (str : string) arg =
     if String.Compare(str, arg, StringComparison.OrdinalIgnoreCase) = 0 then 
