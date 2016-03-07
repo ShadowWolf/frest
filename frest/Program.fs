@@ -1,13 +1,9 @@
 ﻿module Program
 open FrestModel
 open PatternMatchers
+open RequestModel
 open System
 open System.Text.RegularExpressions
-
-// Parameters:
-// frest [header:value]{0+} REQUEST URL [KEY=Value]{0+}
-// 
-
 
 
 let defaultOpt arg model =
@@ -33,11 +29,16 @@ let processArgs cmdLine model =
             | head :: tail -> processor tail (doArgs head innerModel)
     processor cmdLine model
 
+// Parameters:
+// frest [header:value]{0+} REQUEST URL [KEY=Value]{0+}
+// 
 [<EntryPoint>]
 let main argv = 
     //printfn "%A" argv
     let args = argv |> List.ofSeq
-    let model = { frest_model.content = []; frest_model.headers = []; frest_model.request = Get; frest_model.url = "" }
+    let model = { frest_model.content = []; frest_model.headers = [{name = "Accept"; value = "application/json"}]; frest_model.request = Get; frest_model.url = "" }
     let processed = processArgs args model
     printfn "%A" processed
+    let result = build_request processed
+    printfn "%A" result
     0 // return an integer exit code
