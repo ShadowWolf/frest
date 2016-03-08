@@ -21,12 +21,16 @@ let mapBody request content =
         | _ -> HttpRequestBody.TextRequest("")
 
 let send (model : frest_model) =
-    let requestType = model.request.ToString().ToUpper()
-    Http.RequestString(model.url, 
-                       httpMethod=model.request.ToString().ToUpper(), 
+    let requestType = model.request.ToString()
+    printfn "Performing request type %A" (model.request) 
+    try
+        Http.RequestString(model.url, 
+                       httpMethod=model.request.ToString(), 
                        headers=(mapHeaders model.headers), 
                        query=(mapQuery model.request model.content), 
                        body=(mapBody model.request model.content))
+    with
+        | :? System.Net.WebException as webEx -> webEx.ToString()
 
 
 let build_request (model : frest_model) = 

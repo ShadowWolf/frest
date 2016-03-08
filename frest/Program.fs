@@ -40,5 +40,5 @@ let main argv =
     let processed = processArgs args model
     printfn "%A" processed
     let result = build_request processed
-    printfn "%A" result
+    printfn "Response from the web server: %A" result
     0 // return an integer exit code

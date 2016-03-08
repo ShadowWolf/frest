@@ -15,7 +15,13 @@ type frest_request =
     Get
     | Post
     | Put 
-    | Patch 
+    | Patch
+    override this.ToString() =
+        match this with 
+        | Get -> "GET"
+        | Post -> "POST"
+        | Put -> "PUT"
+        | Patch -> "PATCH"
 
 type url = string
 
