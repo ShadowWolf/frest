@@ -4,8 +4,8 @@ open FSharp.Data
 open FrestModel
 open Newtonsoft.Json
 
-let mapJson (content : List<frest_content>) = 
-    JsonConvert.SerializeObject(content |> List.map (fun m -> (m.name, m.value)))
+let mapJson (content : List<frest_content>) =
+    JsonConvert.SerializeObject(content |> List.map (fun m -> (m.name, m.value)) |> dict)
 
 let mapHeaders (headers : List<frest_header>) = 
     headers |> List.map (fun m -> (m.name, m.value))
