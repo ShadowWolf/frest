@@ -9,8 +9,8 @@ let makeDictionary content =
     |> List.map (fun m -> (m.name, m.value)) 
     |> dict
 
-let mapJson (content : List<frest_content>) =
-    JsonConvert.SerializeObject(makeDictionary(content))
+let mapJson content =
+    JsonConvert.SerializeObject(content)
 
 let mapHeaders (headers : Set<frest_header>) = 
     headers |> Set.map (fun m -> (m.name, m.value))
@@ -22,40 +22,38 @@ let mapQuery request content =
 
 let mapBody request content =
     match request with
-        | Post | Patch | Put -> HttpRequestBody.TextRequest(mapJson content)
+        | Post | Patch | Put -> HttpRequestBody.TextRequest content
         | _ -> HttpRequestBody.TextRequest("")
+
+let mapJsonContent (model : frest_model) =
+    if (String.IsNullOrEmpty model.jsonFile = true) then
+        makeDictionary(model.content) |> mapJson
+    else
+        System.IO.File.ReadAllText(model.jsonFile)
 
 let send (model : frest_model) =
     let requestType = model.request.ToString()
-    printfn "Performing request type %A" (model.request) 
+    printfn "Performing request %A to url %A" model.request model.url
     try
         Http.RequestString(model.url, 
                        httpMethod=model.request.ToString(), 
                        headers=(mapHeaders model.headers), 
                        query=(mapQuery model.request model.content), 
-                       body=(mapBody model.request model.content))
+                       body=(mapBody model.request (mapJsonContent model)))
     with
         | :? System.Net.WebException as webEx -> webEx.ToString()
-
-//let validateModel (model : frest_model) :  = 
-//    let rec validators innerModel = 
-//        if (innerModel.request = Post || innerModel.request = Put || innerModel.request = Patch && (List.tryFind (fun (m : frest_header) -> m.name = "") innerModel.headers) = None) then
-//            let updatedModel = {innerModel with headers = (build_header "" ":") :: innerModel.headers}
-//            validators updatedModel
-//        innerModel
-//
-//    validators model
-
+        
 let addContentType (model : frest_model) = 
     if (model.content.IsEmpty = true) then
         model
     else
         match model.request with
             | Post | Put | Patch -> {model with headers = model.headers.Add(build_header "content-type:application/json" ":")}
-            | _ -> model
-            
-        
+            | _ -> model      
 
 let build_request (model : frest_model) = 
-    let updatedModel = addContentType model
-    send updatedModel
+    if (String.IsNullOrEmpty(model.jsonFile) = false && model.content.IsEmpty = false) then
+        "Both a json file and a list of key/value pairs was supplied."
+    else 
+        let updatedModel = addContentType model
+        send updatedModel

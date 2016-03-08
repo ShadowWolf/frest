@@ -30,7 +30,8 @@ type frest_model = {
     request: frest_request;
     url: url;
     content: List<frest_content>;
-    quick_exit: bool
+    quick_exit: bool;
+    jsonFile: string;
 }
 
 let build_header (input: string) (split : string) : frest_header = 
@@ -44,3 +45,8 @@ let build_content (input : string) (split : string) =
     match kvp with
         | [|first; second|] -> {name = first; value = second}
         | _ -> failwith "Invalid input for split value"
+
+// remove [/-]json and return the string.
+let strip_json (input : string) =
+    let fileName = input.Remove(0, 6)
+    fileName
