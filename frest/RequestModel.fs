@@ -31,8 +31,6 @@ let mapBody request content =
         | Post | Patch | Put -> HttpRequestBody.TextRequest content
         | _ -> HttpRequestBody.TextRequest("")
 
-
-
 let send (model : frest_model) =
     printfn "Performing request %A to url %A" model.request model.url
     try
@@ -56,5 +54,4 @@ let build_request (model : frest_model) =
     if ( (String.IsNullOrEmpty model.jsonFile) = false && model.content.IsEmpty = false) then
         "Both a json file and a list of key/value pairs was supplied."
     else 
-        let updatedModel = addContentType model
-        send updatedModel
+        send (addContentType model)
