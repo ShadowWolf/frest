@@ -46,12 +46,8 @@ let processArgs cmdLine model =
             | head :: tail -> processor tail (doArgs head innerModel)
     processor cmdLine model
 
-// Parameters:
-// frest [header:value]{0+} REQUEST URL [KEY=Value]{0+}
-// 
 [<EntryPoint>]
 let main argv = 
-    //printfn "%A" argv
     let args = argv |> List.ofSeq
     let model = { frest_model.content = defaultContent; frest_model.headers = Set.ofList defaultHeaders; frest_model.request = Get; frest_model.url = ""; quick_exit = false; jsonFile = String.Empty }
     let processed = processArgs args model
@@ -60,4 +56,4 @@ let main argv =
         | true -> printfn "No request to send"
         | false -> printfn "Response from the web server: %A" (build_request processed)
 
-    0 // return an integer exit code
+    0
