@@ -51,7 +51,7 @@ let addContentType (model : frest_model) =
             | _ -> model      
 
 let build_request (model : frest_model) = 
-    if ( (String.IsNullOrEmpty model.jsonFile) = false && model.content.IsEmpty = false) then
+    if ((String.IsNullOrEmpty model.jsonFile) = false && model.content.IsEmpty = false) then
         "Both a json file and a list of key/value pairs was supplied."
     else 
         send (addContentType model)
