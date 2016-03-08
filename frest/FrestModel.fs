@@ -26,10 +26,11 @@ type frest_request =
 type url = string
 
 type frest_model = {
-    headers: List<frest_header>;
+    headers: Set<frest_header>;
     request: frest_request;
     url: url;
     content: List<frest_content>;
+    quick_exit: bool
 }
 
 let build_header (input: string) (split : string) : frest_header = 

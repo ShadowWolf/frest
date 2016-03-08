@@ -4,11 +4,16 @@ open FSharp.Data
 open FrestModel
 open Newtonsoft.Json
 
-let mapJson (content : List<frest_content>) =
-    JsonConvert.SerializeObject(content |> List.map (fun m -> (m.name, m.value)) |> dict)
+let makeDictionary content = 
+    content 
+    |> List.map (fun m -> (m.name, m.value)) 
+    |> dict
 
-let mapHeaders (headers : List<frest_header>) = 
-    headers |> List.map (fun m -> (m.name, m.value))
+let mapJson (content : List<frest_content>) =
+    JsonConvert.SerializeObject(makeDictionary(content))
+
+let mapHeaders (headers : Set<frest_header>) = 
+    headers |> Set.map (fun m -> (m.name, m.value))
 
 let mapQuery request content = 
     match request with
@@ -32,6 +37,25 @@ let send (model : frest_model) =
     with
         | :? System.Net.WebException as webEx -> webEx.ToString()
 
+//let validateModel (model : frest_model) :  = 
+//    let rec validators innerModel = 
+//        if (innerModel.request = Post || innerModel.request = Put || innerModel.request = Patch && (List.tryFind (fun (m : frest_header) -> m.name = "") innerModel.headers) = None) then
+//            let updatedModel = {innerModel with headers = (build_header "" ":") :: innerModel.headers}
+//            validators updatedModel
+//        innerModel
+//
+//    validators model
+
+let addContentType (model : frest_model) = 
+    if (model.content.IsEmpty = true) then
+        model
+    else
+        match model.request with
+            | Post | Put | Patch -> {model with headers = model.headers.Add(build_header "content-type:application/json" ":")}
+            | _ -> model
+            
+        
 
 let build_request (model : frest_model) = 
-    send model
+    let updatedModel = addContentType model
+    send updatedModel
